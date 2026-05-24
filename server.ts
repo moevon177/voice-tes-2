@@ -1,10 +1,21 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import mime from "mime";
 
 dotenv.config();
+
+function getFirebaseConfig() {
+  try {
+    const configPath = path.join(process.cwd(), "firebase-applet-config.json");
+    return JSON.parse(fs.readFileSync(configPath, "utf-8"));
+  } catch (err) {
+    console.error("Gagal membaca firebase-applet-config.json:", err);
+    return {};
+  }
+}
 
 export const app = express();
 const PORT = parseInt(process.env.PORT || "3000", 10);
@@ -320,7 +331,7 @@ app.post("/api/license/validate", async (req, res) => {
 
   try {
     const admin = (await import("firebase-admin")).default;
-    const firebaseConfig = (await import("./firebase-applet-config.json")).default;
+    const firebaseConfig = getFirebaseConfig();
 
     if (!admin.apps.length) {
       admin.initializeApp({
@@ -469,7 +480,7 @@ app.post("/api/license/client-verify", async (req, res) => {
         try {
           const admin = (await import("firebase-admin")).default;
           if (!admin.apps.length) {
-            const firebaseConfig = (await import("./firebase-applet-config.json")).default;
+            const firebaseConfig = getFirebaseConfig();
             admin.initializeApp({
               projectId: firebaseConfig.projectId
             });
@@ -514,7 +525,7 @@ app.post("/api/license/client-verify", async (req, res) => {
   // Fallback to Local Firestore
   try {
     const admin = (await import("firebase-admin")).default;
-    const firebaseConfig = (await import("./firebase-applet-config.json")).default;
+    const firebaseConfig = getFirebaseConfig();
 
     if (!admin.apps.length) {
       admin.initializeApp({

@@ -485,7 +485,7 @@ export default function App() {
 
   // Concurrent Session Control (Maksimal 5 Sesi per Akun)
   useEffect(() => {
-    if (!user?.email || !user?.uid) {
+    if (!user?.email || !user?.uid || isLicenseLoading || (!license && !isAdmin)) {
       setActiveSessions([]);
       setIsSessionBlocked(false);
       return;
@@ -582,13 +582,16 @@ export default function App() {
 
     return () => {
       clearInterval(intervalId);
-      unsubscribe();
+      unsub();
       window.removeEventListener("beforeunload", handleBeforeUnload);
       if (auth.currentUser) {
         deleteDoc(sessionDocRef).catch(() => {});
       }
     };
-  }, [user?.email, user?.uid, sessionId]);
+    function unsub() {
+      if (unsubscribe) unsubscribe();
+    }
+  }, [user?.email, user?.uid, sessionId, license, isAdmin, isLicenseLoading]);
 
   useEffect(() => {
     if (user?.email) {
@@ -614,22 +617,6 @@ export default function App() {
           // Default admin check for initial setup
           if (user.email === "rizkirifai058@gmail.com") {
             setIsAdmin(true);
-          } else {
-            // Register a pending request automatically
-            const path = `license_requests/${user.email}`;
-            setDoc(doc(db, "license_requests", user.email), {
-              email: user.email,
-              displayName: user.displayName,
-              photoURL: user.photoURL,
-              status: "pending",
-              requestedAt: Timestamp.now()
-            }, { merge: true }).catch(err => {
-              if (err.code === 'permission-denied') {
-                handleFirestoreError(err, OperationType.CREATE, path);
-              } else {
-                console.error("Error creating request:", err);
-              }
-            });
           }
         }
         setIsLicenseLoading(false);
