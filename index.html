@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Voice - SRFactory</title>
+    <script>
+      (function() {
+        // Sanitize storage to prevent "undefined" string JSON.parse errors from crashing libraries
+        try {
+          [localStorage, sessionStorage].forEach(storage => {
+            for (let i = storage.length - 1; i >= 0; i--) {
+              const key = storage.key(i);
+              if (key && (storage.getItem(key) === 'undefined' || storage.getItem(key) === null)) {
+                if (storage.getItem(key) === 'undefined') {
+                  storage.removeItem(key);
+                }
+              }
+            }
+          });
+        } catch (e) {}
+
+        // Global JSON.parse safeguard for "undefined" string
+        try {
+          const originalParse = JSON.parse;
+          JSON.parse = function(text, reviver) {
+            if (text === 'undefined' || text === undefined) {
+              return undefined;
+            }
+            if (text === 'null') return null;
+            return originalParse.apply(this, arguments);
+          };
+        } catch (e) {}
+
+        // Global Storage safeguard to prevent setting "undefined" string
+        try {
+          const originalSetItem = Storage.prototype.setItem;
+          Storage.prototype.setItem = function(key, value) {
+            if (value === undefined || value === 'undefined') {
+              return;
+            }
+            originalSetItem.apply(this, arguments);
+          };
+        } catch (e) {}
+
+        try {
+          const originalFetch = window.fetch;
+          if (originalFetch) {
+            Object.defineProperty(window, 'fetch', {
+              get: function() { return originalFetch; },
+              set: function(v) { console.warn('Attempt to override window.fetch blocked', v); },
+              configurable: true,
+              enumerable: true
+            });
+          }
+        } catch (e) {
+          console.warn('Fetch safeguard failed', e);
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎙️</text></svg>">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

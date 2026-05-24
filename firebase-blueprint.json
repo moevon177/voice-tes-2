@@ -1,0 +1,104 @@
+{
+  "entities": {
+    "AudioHistory": {
+      "title": "Audio History",
+      "description": "Stored metadata and transcripts of generated audio.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "transcript": { "type": "string" },
+        "audioProfile": { "type": "string" },
+        "scene": { "type": "string" },
+        "directorNote": { "type": "string" },
+        "voice": { "type": "string" },
+        "pace": { "type": "string" },
+        "accent": { "type": "string" },
+        "temperature": { "type": "number" },
+        "timestamp": { "type": "number" },
+        "audioUrl": { "type": "string" },
+        "audioBase64": { "type": "string" },
+        "audioTooLarge": { "type": "boolean" }
+      },
+      "required": ["userId", "transcript", "timestamp"]
+    },
+    "VoicePreset": {
+      "title": "Voice Preset",
+      "description": "Saved configurations of voice settings.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "voice": { "type": "string" },
+        "voiceGender": { "type": "string", "enum": ["Wanita", "Pria"] },
+        "audioProfile": { "type": "string" },
+        "directorNote": { "type": "string" },
+        "scene": { "type": "string" },
+        "pace": { "type": "string" },
+        "accent": { "type": "string" },
+        "temperature": { "type": "number" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["userId", "name", "voice", "voiceGender", "createdAt"]
+    },
+    "License": {
+      "title": "User License",
+      "description": "Subscription or access license for a specific email.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "plan": { "type": "string", "enum": ["Standard", "Pro", "Admin"] },
+        "issuedAt": { "type": "number" },
+        "expiresAt": { "type": "number" }
+      },
+      "required": ["email", "isActive", "issuedAt"]
+    },
+    "LicenseRequest": {
+      "title": "License Request",
+      "description": "A request for a license by a user.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "denied"] },
+        "requestedAt": { "type": "object" }
+      },
+      "required": ["email", "status", "requestedAt"]
+    },
+    "Session": {
+      "title": "User Session",
+      "description": "Active user sessions to limit concurrent logins.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "lastActive": { "type": "object" },
+        "userAgent": { "type": "string" }
+      },
+      "required": ["userId", "email", "lastActive"]
+    }
+  },
+  "firestore": {
+    "/history/{historyId}": {
+      "schema": "AudioHistory",
+      "description": "Collection of audio generation history."
+    },
+    "/presets/{presetId}": {
+      "schema": "VoicePreset",
+      "description": "Collection of saved voice presets."
+    },
+    "/licenses/{email}": {
+      "schema": "License",
+      "description": "Global user licenses indexed by email."
+    },
+    "/license_requests/{email}": {
+      "schema": "LicenseRequest",
+      "description": "Pending requests for user licenses."
+    },
+    "/sessions/{sessionId}": {
+      "schema": "Session",
+      "description": "Collection of active user sessions."
+    }
+  }
+}

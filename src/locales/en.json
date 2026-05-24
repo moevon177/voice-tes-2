@@ -1,0 +1,217 @@
+{
+  "translation": {
+    "app": {
+      "name": "New Voice - SRFactory",
+      "tagline": "Professional AI Engine",
+      "version": "V{{version}}"
+    },
+    "menu": {
+      "textToVoice": "Text To Voice",
+      "imageToVoice": "Image To Voice",
+      "history": "Session History",
+      "settings": "Settings",
+      "connectGDrive": "Connect GDrive",
+      "signOut": "Sign Out",
+      "signIn": "Sign In",
+      "guide": "Guide",
+      "mainMenu": "Main Menu"
+    },
+    "studio": {
+      "scriptTitle": "Script Content",
+      "scriptChars": "{{count}} characters",
+      "scriptPlaceholder": "Write the script you want to read...",
+      "audioProfile": "Audio Profile",
+      "audioProfilePlaceholder": "Example: warm, cinematic, whisper...",
+      "audioPresets": {
+        "Warm & Balanced": "Warm & Balanced",
+        "Cinematic Hero": "Cinematic Hero",
+        "Studio Quality": "Studio Quality",
+        "Vintage Radio": "Vintage Radio",
+        "Bright & Clear": "Bright & Clear",
+        "Natural Ambient": "Natural Ambient",
+        "Deep Bass": "Deep Bass",
+        "Whisper Quiet": "Whisper Quiet",
+        "Broadcasting HD": "Broadcasting HD",
+        "Lo-Fi Aesthetic": "Lo-Fi Aesthetic",
+        "Dynamic Range": "Dynamic Range",
+        "Crystal Highs": "Crystal Highs",
+        "Bass Boosted": "Bass Boosted",
+        "Telephone Line": "Telephone Line",
+        "Underwater": "Underwater",
+        "Space Void": "Space Void"
+      },
+      "sceneContext": "Scene Context",
+      "scenePlaceholder": "Example: living room, stage, office...",
+      "scenePresets": {
+        "Quiet Room": "Quiet Room",
+        "Open Stadium": "Open Stadium",
+        "Underground Cave": "Underground Cave",
+        "Modern Office": "Modern Office",
+        "Car Interior": "Car Interior",
+        "Classroom": "Classroom",
+        "Busy Street": "Busy Street",
+        "Small Closet": "Small Closet",
+        "Grand Cathedral": "Grand Cathedral",
+        "Echoing Hallway": "Echoing Hallway",
+        "Forest at Night": "Forest at Night",
+        "Airplane Cabin": "Airplane Cabin",
+        "Deep Sea": "Deep Sea",
+        "Rainy Porch": "Rainy Porch",
+        "Cyberpunk City": "Cyberpunk City",
+        "Empty Library": "Empty Library"
+      },
+      "pace": "Pace",
+      "pacePresets": {
+        "natural": {
+          "label": "Natural",
+          "desc": "Natural conversational pace."
+        },
+        "rapid": {
+          "label": "Rapid Fire",
+          "desc": "Fast, energetic, no dead air."
+        },
+        "drift": {
+          "label": "The Drift",
+          "desc": "Slow, liquid, zero urgency."
+        },
+        "staccato": {
+          "label": "Staccato",
+          "desc": "Short, clipped sentences with pauses."
+        }
+      },
+      "accent": "Accent",
+      "accentPlaceholder": "Example: Neutral, British, Southern...",
+      "accentPresets": {
+        "Neutral": "Neutral"
+      },
+      "modelTemperature": "Model Temperature",
+      "conservative": "Conservative (0.0)",
+      "creative": "Creative (2.0)",
+      "directorNote": "Director's Note",
+      "directorNotePlaceholder": "Mention mood, speaking style, and tempo...",
+      "directorPresets": {
+        "Ceria": "Cheerful",
+        "Tenang": "Calm",
+        "Tegas": "Firm",
+        "Sedih": "Sad",
+        "Misterius": "Mysterious",
+        "Marah": "Angry",
+        "Takut": "Scared",
+        "Sarkastik": "Sarcastic",
+        "Formal": "Formal",
+        "Ramah": "Friendly"
+      },
+      "searchVoices": "Search voices...",
+      "renderAudio": "Render Audio",
+      "processing": "Processing Engine...",
+      "saveFile": "Save File",
+      "saveToDrive": "Save to Drive",
+      "saving": "Saving...",
+      "lastHistory": "Recent History",
+      "quickView": "Studio Quick View",
+      "viewAll": "View All"
+    },
+    "history": {
+      "title": "Session History",
+      "subtitle": "Collection of vocal works you have created",
+      "backToStudio": "Back to Studio",
+      "empty": "No history yet",
+      "emptyTagline": "YOUR FIRST MASTERPIECE AWAITS",
+      "useScript": "Use This Script",
+      "delete": "Delete",
+      "cloudLimit": "Cloud Sync Limit Exceeded",
+      "scriptRestored": "Script restored in Studio"
+    },
+    "tutorial": {
+      "title": "New Voice Guide",
+      "subtitle": "Professional vocals in seconds",
+      "step1Title": "Input Script",
+      "step1Desc": "Write or paste your script. Ensure punctuation is correct for better intonation.",
+      "step2Title": "Audio Profile",
+      "step2Desc": "Select voice profile (Warm, Cinematic, etc.) to adjust audio output quality.",
+      "step3Title": "Director's Notes",
+      "step3Desc": "Powerful feature. Give extra instructions like 'Cheerful', 'Firm', or 'Sad'.",
+      "step4Title": "Voice Character",
+      "step4Desc": "Dozens of Male & Female voices with unique characters. Use search to find one.",
+      "step5Title": "Render & Save",
+      "step5Desc": "Click 'Render Audio' and wait. Results can be played directly or downloaded as .WAV.",
+      "tipsTitle": "Pro Tips",
+      "tipsContent": "\"Use high Temperature (1.2+) for varied result but with lower naturalness risk.\"",
+      "startBtn": "Start Using Studio",
+      "complete": "Tutorial complete! Happy creating."
+    },
+    "settings": {
+      "title": "API Settings",
+      "subtitle": "Configure your Gemini AI engine",
+      "apiKeyLabel": "Gemini API Key",
+      "apiKeyPlaceholder": "Enter your API Key...",
+      "apiKeyHint": "API Key is stored locally in your browser.",
+      "getApiKey": "Get Free API Key",
+      "saveSettings": "Save Settings",
+      "ready": "Ready",
+      "language": "Language",
+      "accountTitle": "USER ACCOUNT",
+      "loginHint": "Sign in to save history in the cloud",
+      "engineTitle": "AI ENGINE CONFIGURATION",
+      "modelEngine": "Model Engine",
+      "connectionStatus": "Connection Status"
+    },
+    "imageVoice": {
+      "title": "Image To Voice",
+      "subtitle": "Extract narrative from image and turn into vocal",
+      "uploadTitle": "Upload Your Image",
+      "uploadHint": "Drag image here or click button below to choose file (JPG, PNG)",
+      "chooseImage": "Choose Image",
+      "analyze": "Analyze & Create Script",
+      "analyzing": "Analyzing Visual...",
+      "howItWorks": "How It Works",
+      "step1": "Upload image (scenery, product, or scenery photo).",
+      "step2": "Gemini Vision AI will dissect visual context and mood.",
+      "step3": "System creates aesthetic Indonesian narrative script automatically.",
+      "tips": "Tips",
+      "tipContent": "Use imagery with good lighting so AI can capture more accurate emotional detail for the script.",
+      "analyzingSuccess": "Image analyzed successfully!",
+      "scriptLoaded": "Script loaded in Studio. Click Render Voice to turn it into vocals.",
+      "analyzingFailed": "Failed to analyze image"
+    },
+    "toasts": {
+      "successRender": "Voice rendered successfully",
+      "errorRender": "Failed to render voice",
+      "successHistoryDelete": "History deleted",
+      "errorHistoryDelete": "Failed to delete history",
+      "successLogin": "Successfully logged in",
+      "errorLogin": "Login failed",
+      "successLogout": "Successfully logged out",
+      "errorLogout": "Logout failed",
+      "startDriveSave": "Starting Drive save process...",
+      "requestDrivePermission": "Requesting Google Drive access permission...",
+      "successDriveSave": "Saved to Google Drive!",
+      "errorDriveSave": "Failed to save to Drive",
+      "successApiKey": "API settings saved",
+      "cloudLimit": "Cloud Sync Limit Exceeded",
+      "analyzingImage": "AI is analyzing image...",
+      "successImageAnalyze": "Image analyzed successfully!",
+      "tipImageAnalyze": "Script has been loaded in Studio. Click Render Voice to turn it into vocal."
+    },
+    "drive": {
+      "subtitle": "Cloud storage management for your audio",
+      "connected": "Google Drive Connected",
+      "disconnected": "Google Drive Not Connected",
+      "connectedHint": "Your account is verified. You can now click 'Save to Drive' in the studio to save audio to your My Drive root folder.",
+      "disconnectedHint": "You need to connect a Google account to automatically save audio renders to your Google Drive.",
+      "connectNow": "Connect Now",
+      "disconnect": "Disconnect",
+      "autoSave": "Auto Save",
+      "autoSaveDesc": "All audio will be saved in high-quality WAV format directly to your My Drive root folder with the 'SRFactory' prefix."
+    },
+    "modals": {
+      "logoutTitle": "Confirm Logout",
+      "logoutMessage": "Are you sure you want to sign out of account {{name}}?",
+      "cancel": "Cancel",
+      "confirmLogout": "Logout",
+      "disconnectDriveTitle": "Disconnect GDrive?",
+      "disconnectDriveMessage": "You won't be able to save audio to the cloud automatically until you reconnect.",
+      "confirmDisconnect": "Disconnect"
+    }
+  }
+}

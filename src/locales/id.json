@@ -1,0 +1,217 @@
+{
+  "translation": {
+    "app": {
+      "name": "New Voice - SRFactory",
+      "tagline": "Professional AI Engine",
+      "version": "V{{version}}"
+    },
+    "menu": {
+      "textToVoice": "Text To Voice",
+      "imageToVoice": "Image To Voice",
+      "history": "Histori Sesi",
+      "settings": "Pengaturan",
+      "connectGDrive": "Hubungkan GDrive",
+      "signOut": "Sign Out",
+      "signIn": "Sign In",
+      "guide": "Guide",
+      "mainMenu": "Menu Utama"
+    },
+    "studio": {
+      "scriptTitle": "Script Content",
+      "scriptChars": "{{count}} karakter",
+      "scriptPlaceholder": "Tulis naskah yang ingin dibacakan...",
+      "audioProfile": "Audio Profile",
+      "audioProfilePlaceholder": "Contoh: warm, cinematic, whisper...",
+      "audioPresets": {
+        "Warm & Balanced": "Hangat & Seimbang",
+        "Cinematic Hero": "Pahlawan Sinematik",
+        "Studio Quality": "Kualitas Studio",
+        "Vintage Radio": "Radio Antik",
+        "Bright & Clear": "Cerah & Jernih",
+        "Natural Ambient": "Ambien Alami",
+        "Deep Bass": "Bass Dalam",
+        "Whisper Quiet": "Bisikan Lembut",
+        "Broadcasting HD": "Penyiaran HD",
+        "Lo-Fi Aesthetic": "Estetika Lo-Fi",
+        "Dynamic Range": "Rentang Dinamis",
+        "Crystal Highs": "Kristal Tajam",
+        "Bass Boosted": "Bass Menggelegar",
+        "Telephone Line": "Saluran Telepon",
+        "Underwater": "Dalam Air",
+        "Space Void": "Ruang Hampa"
+      },
+      "sceneContext": "Scene Context",
+      "scenePlaceholder": "Contoh: ruang tamu, panggung, kantor...",
+      "scenePresets": {
+        "Quiet Room": "Ruangan Sunyi",
+        "Open Stadium": "Stadion Terbuka",
+        "Underground Cave": "Gua Bawah Tanah",
+        "Modern Office": "Kantor Modern",
+        "Car Interior": "Interior Mobil",
+        "Classroom": "Ruang Kelas",
+        "Busy Street": "Jalanan Ramai",
+        "Small Closet": "Lemari Kecil",
+        "Grand Cathedral": "Katedral Besar",
+        "Echoing Hallway": "Lorong Bergema",
+        "Forest at Night": "Hutan Malam Hari",
+        "Airplane Cabin": "Kabin Pesawat",
+        "Deep Sea": "Laut Dalam",
+        "Rainy Porch": "Teras Hujan",
+        "Cyberpunk City": "Kota Cyberpunk",
+        "Empty Library": "Perpustakaan Kosong"
+      },
+      "pace": "Pace",
+      "pacePresets": {
+        "natural": {
+          "label": "Alami",
+          "desc": "Kecepatan percakapan natural."
+        },
+        "rapid": {
+          "label": "Kilat",
+          "desc": "Cepat, energik, tanpa jeda kosong."
+        },
+        "drift": {
+          "label": "Lambat",
+          "desc": "Pelan, mengalir, tanpa urgensi."
+        },
+        "staccato": {
+          "label": "Staccato",
+          "desc": "Kalimat pendek terpotong dengan jeda jelas."
+        }
+      },
+      "accent": "Accent",
+      "accentPlaceholder": "Contoh: Neutral, British, Southern...",
+      "accentPresets": {
+        "Neutral": "Netral"
+      },
+      "modelTemperature": "Model Temperature",
+      "conservative": "Konservatif (0.0)",
+      "creative": "Kreatif (2.0)",
+      "directorNote": "Director's Note",
+      "directorNotePlaceholder": "Sebutkan mood, gaya bicara, dan tempo...",
+      "directorPresets": {
+        "Ceria": "Ceria",
+        "Tenang": "Tenang",
+        "Tegas": "Tegas",
+        "Sedih": "Sedih",
+        "Misterius": "Misterius",
+        "Marah": "Marah",
+        "Takut": "Takut",
+        "Sarkastik": "Sarkastik",
+        "Formal": "Formal",
+        "Ramah": "Ramah"
+      },
+      "searchVoices": "Cari suara...",
+      "renderAudio": "Render Audio",
+      "processing": "Processing Engine...",
+      "saveFile": "Simpan File",
+      "saveToDrive": "Simpan ke Drive",
+      "saving": "Menyimpan...",
+      "lastHistory": "Riwayat Terakhir",
+      "quickView": "Quick View Studio",
+      "viewAll": "Lihat Semua"
+    },
+    "history": {
+      "title": "Riwayat Sesi",
+      "subtitle": "Kumpulan karya vokal yang telah Anda buat",
+      "backToStudio": "Kembali ke Studio",
+      "empty": "Belum ada riwayat",
+      "emptyTagline": "KARYA PERTAMA ANDA MENANTI",
+      "useScript": "Gunakan Naskah Ini",
+      "delete": "Hapus",
+      "cloudLimit": "Batas Sinkronisasi Cloud Terlampaui",
+      "scriptRestored": "Naskah dipulihkan di Studio"
+    },
+    "tutorial": {
+      "title": "Panduan New Voice",
+      "subtitle": "Cara menghasilkan vokal profesional dalam hitungan detik",
+      "step1Title": "Input Naskah",
+      "step1Desc": "Tulis atau tempel naskah Anda di Script Area. Pastikan tanda baca sesuai untuk intonasi yang lebih baik.",
+      "step2Title": "Audio Profile",
+      "step2Desc": "Pilih profil suara (Preset: Warm, Cinematic, dsb) untuk menyesuaikan kualitas audio output.",
+      "step3Title": "Director's Notes",
+      "step3Desc": "Ini adalah fitur paling powerful. Berikan instruksi tambahan seperti 'Ceria', 'Tegas', atau 'Sedih'.",
+      "step4Title": "Pilih Karakter",
+      "step4Desc": "Tersedia puluhan suara Pria & Wanita dengan karakter vokal yang unik. Gunakan fitur search untuk mempermudah.",
+      "step5Title": "Render & Simpan",
+      "step5Desc": "Klik 'Render Audio' dan tunggu AI memproses. Hasilnya bisa diputar langsung atau didownload sebagai file .WAV.",
+      "tipsTitle": "Tips Pro",
+      "tipsContent": "\"Gunakan Temperature tinggi (1.2+) untuk hasil bicara yang lebih variatif namun berisiko kurang natural.\"",
+      "startBtn": "Mulai Menggunakan Studio",
+      "complete": "Tutorial selesai! Selamat berkarya."
+    },
+    "settings": {
+      "title": "Pengaturan API",
+      "subtitle": "Konfigurasi mesin AI Gemini Anda",
+      "apiKeyLabel": "Gemini API Key",
+      "apiKeyPlaceholder": "Masukkan API Key Anda...",
+      "apiKeyHint": "API Key disimpan secara lokal di browser Anda.",
+      "getApiKey": "Dapatkan API Key Gratis",
+      "saveSettings": "Simpan Pengaturan",
+      "ready": "Ready",
+      "language": "Bahasa",
+      "accountTitle": "AKUN PENGGUNA",
+      "loginHint": "Masuk untuk menyimpan riwayat di cloud",
+      "engineTitle": "KONFIGURASI MESIN AI",
+      "modelEngine": "Mesin Model",
+      "connectionStatus": "Status Koneksi"
+    },
+    "imageVoice": {
+      "title": "Image To Voice",
+      "subtitle": "Ekstrak naratif dari gambar dan jadikan vokal",
+      "uploadTitle": "Unggah Gambar Anda",
+      "uploadHint": "Tarik gambar ke sini atau klik tombol di bawah untuk memilih file (JPG, PNG)",
+      "chooseImage": "Pilih Gambar",
+      "analyze": "Analisis & Buat Naskah",
+      "analyzing": "Menganalisis Visual...",
+      "howItWorks": "Cara Kerja",
+      "step1": "Unggah gambar (foto suasana, produk, atau pemandangan).",
+      "step2": "AI Gemini Vision akan membedah konteks dan mood visual.",
+      "step3": "Sistem membuat naskah narasi Indonesia yang estetik secara otomatis.",
+      "tips": "Tips",
+      "tipContent": "Gunakan gambar dengan pencahayaan baik agar AI dapat menangkap detail emosi yang lebih akurat untuk dijadikan naskah.",
+      "analyzingSuccess": "Gambar berhasil dianalisis!",
+      "scriptLoaded": "Naskah telah dimuat di Studio. Klik Render Voice untuk mengubahnya menjadi vokal.",
+      "analyzingFailed": "Gagal menganalisis gambar"
+    },
+    "toasts": {
+      "successRender": "Suara berhasil dirender",
+      "errorRender": "Gagal merender suara",
+      "successHistoryDelete": "Riwayat dihapus",
+      "errorHistoryDelete": "Gagal menghapus riwayat",
+      "successLogin": "Berhasil masuk",
+      "errorLogin": "Login gagal",
+      "successLogout": "Berhasil keluar",
+      "errorLogout": "Logout gagal",
+      "startDriveSave": "Memulai proses simpan ke Drive...",
+      "requestDrivePermission": "Meminta izin akses Google Drive...",
+      "successDriveSave": "Tersimpan di Google Drive!",
+      "errorDriveSave": "Gagal menyimpan ke Drive",
+      "successApiKey": "Pengaturan API disimpan",
+      "cloudLimit": "Batas Sinkronisasi Cloud Terlampaui",
+      "analyzingImage": "AI sedang menganalisis gambar...",
+      "successImageAnalyze": "Gambar berhasil dianalisis!",
+      "tipImageAnalyze": "Naskah telah dimuat di Studio. Klik Render Voice untuk mengubahnya menjadi vokal."
+    },
+    "drive": {
+      "subtitle": "Manajemen penyimpanan cloud untuk audio Anda",
+      "connected": "Google Drive Terhubung",
+      "disconnected": "Google Drive Belum Terhubung",
+      "connectedHint": "Akun Anda sudah terverifikasi. Sekarang Anda bisa langsung klik 'Save to Drive' di studio untuk menyimpan audio ke root folder My Drive.",
+      "disconnectedHint": "Anda perlu menghubungkan akun Google untuk dapat menyimpan hasil render audio secara otomatis ke Google Drive Anda.",
+      "connectNow": "Hubungkan Sekarang",
+      "disconnect": "Putuskan Koneksi",
+      "autoSave": "Simpan Otomatis",
+      "autoSaveDesc": "Semua audio akan disimpan dalam format WAV berkualitas tinggi langsung ke root folder My Drive Anda dengan prefix 'SRFactory'."
+    },
+    "modals": {
+      "logoutTitle": "Konfirmasi Keluar",
+      "logoutMessage": "Apakah Anda yakin ingin keluar dari akun {{name}}?",
+      "cancel": "Batal",
+      "confirmLogout": "Keluar",
+      "disconnectDriveTitle": "Putuskan GDrive?",
+      "disconnectDriveMessage": "Anda tidak akan bisa menyimpan audio ke cloud secara otomatis sampai Anda menghubungkannya kembali.",
+      "confirmDisconnect": "Putuskan"
+    }
+  }
+}

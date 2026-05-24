@@ -1,0 +1,10 @@
+{
+  "name": "New Voice - SRFactory",
+  "description": "Professional AI-powered voice generation with custom audio profiles and director\u0027s notes.",
+  "requestFramePermissions": [
+    "identity-credentials-get"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,147 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /test/connection {
+      allow read: if true;
+    }
+
+    // Phase 3: Primitive Definition
+    function isSignedIn() {
+      return request.auth != null 
+        && request.auth.uid != null 
+        && (request.auth.token.get('email_verified', false) == true || request.auth.token.get('email', null) != null);
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.get('email', '') == "rizkirifai058@gmail.com";
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Hardened Rules for History
+    match /history/{historyId} {
+      // Validation Blueprint (Pillar 2)
+      function isValidHistory(data) {
+        return data.userId == request.auth.uid
+          && data.transcript is string && data.transcript.size() <= 50000
+          && data.timestamp is number
+          && data.get('audioProfile', '') is string
+          && data.get('scene', '') is string
+          && data.get('directorNote', '') is string
+          && data.get('voice', '') is string
+          && data.get('pace', '') is string
+          && data.get('accent', '') is string
+          && (data.get('temperature', 0) is number || data.get('temperature', 0) is int)
+          && (data.get('audioUrl', null) == null || data.get('audioUrl', '') is string)
+          && (data.get('audioBase64', null) == null || data.get('audioBase64', '') is string)
+          && (data.get('audioTooLarge', null) == null || data.get('audioTooLarge', false) is bool)
+          && data.keys().hasAll(['userId', 'transcript', 'timestamp']);
+      }
+
+      // Pillar 8: Secure List Queries
+      // Evaluate resource.data directly to force secure queries
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      // Pillar 3: Path Variable Hardening
+      allow get: if isValidId(historyId) && isOwner(resource.data.userId);
+      
+      allow create: if isSignedIn() 
+        && isValidHistory(incoming());
+      
+      allow delete: if isValidId(historyId) && isOwner(existing().userId);
+      
+      // Immortality Rule (Pillar 9)
+      allow update: if false;
+    }
+
+    // Hardened Rules for Presets
+    match /presets/{presetId} {
+      function isValidPreset(data) {
+        return data.userId == request.auth.uid
+          && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+          && data.voice is string
+          && data.voiceGender is string && data.voiceGender in ["Wanita", "Pria"]
+          && data.audioProfile is string
+          && data.directorNote is string
+          && data.scene is string
+          && data.pace is string
+          && data.accent is string
+          && (data.temperature is number || data.temperature is int)
+          && data.createdAt is number
+          && data.keys().hasAll(['userId', 'name', 'voice', 'voiceGender', 'createdAt']);
+      }
+
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      allow get: if isValidId(presetId) && isOwner(resource.data.userId);
+      
+      allow create: if isSignedIn() 
+        && isValidPreset(incoming());
+      
+      allow delete: if isValidId(presetId) && isOwner(existing().userId);
+
+      allow update: if isValidId(presetId) 
+        && isOwner(existing().userId)
+        && isValidPreset(incoming())
+        && incoming().userId == existing().userId
+        && incoming().createdAt == existing().createdAt;
+    }
+
+    // License Management Rules
+    match /licenses/{email} {
+      // Allow users to get their own license status
+      allow get: if isSignedIn() && (request.auth.token.email == email || isAdmin());
+      
+      // Only admins can see the full list or create/update licenses
+      allow list: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /license_requests/{email} {
+      function isValidRequest(data) {
+        return data.email == email
+          && data.status in ["pending", "approved", "denied"]
+          && data.requestedAt is timestamp
+          && (data.get('displayName', '') is string)
+          && (data.get('photoURL', '') is string)
+          && data.keys().hasAll(['email', 'status', 'requestedAt']);
+      }
+      
+      allow get: if isSignedIn() && (request.auth.token.email == email || isAdmin());
+      allow create: if isSignedIn() && request.auth.token.email == email && isValidRequest(incoming());
+      allow update: if (isSignedIn() && request.auth.token.email == email && isValidRequest(incoming()) && incoming().status == "pending") || isAdmin();
+      allow list: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /sessions/{sessionId} {
+      function isValidSession(data) {
+        return data.userId == request.auth.uid;
+      }
+
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create, update: if isSignedIn() && isValidSession(incoming());
+      allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+  }
+}
