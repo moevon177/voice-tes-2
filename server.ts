@@ -1,9 +1,11 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
+import cors from "cors";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import mime from "mime";
+import { handleLicenseCheck } from "./services/licenseCheckHandler";
 
 dotenv.config();
 
@@ -61,6 +63,45 @@ async function getFirebaseAdmin() {
     admin.initializeApp(opt);
   }
   return admin;
+}
+
+function getFirestoreInstance(admin: any) {
+  const firebaseConfig = getFirebaseConfig();
+  const dbId = firebaseConfig.firestoreDatabaseId;
+  return dbId ? admin.firestore(dbId) : admin.firestore();
+}
+
+async function runFirestoreOp<T>(admin: any, operation: (db: any) => Promise<T>): Promise<T> {
+  const firebaseConfig = getFirebaseConfig();
+  const dbId = firebaseConfig.firestoreDatabaseId;
+
+  if (dbId) {
+    try {
+      const db = admin.firestore(dbId);
+      return await operation(db);
+    } catch (err: any) {
+      const errMsg = err.message || "";
+      const errStatusStr = String(err.status || "");
+      const errCode = err.code !== undefined ? String(err.code) : "";
+      
+      if (
+        errCode === "5" || 
+        errCode === "not-found" || 
+        errStatusStr === "5" ||
+        errMsg.includes("NOT_FOUND") || 
+        errMsg.toLowerCase().includes("not found") ||
+        errMsg.toLowerCase().includes("database")
+      ) {
+        console.warn(`Firestore Database '${dbId}' tidak ditemukan di project GCP ini. Melakukan fallback otomatis ke default database (default)...`);
+        const defaultDb = admin.firestore();
+        return await operation(defaultDb);
+      }
+      throw err;
+    }
+  }
+
+  const defaultDb = admin.firestore();
+  return await operation(defaultDb);
 }
 
 export const app = express();
@@ -206,6 +247,7 @@ function convertToWav(rawData: string, mimeType: string) {
 
 // --------------------------------------------------
 
+app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // API: Health Check
@@ -377,10 +419,11 @@ app.post("/api/license/validate", async (req, res) => {
 
   try {
     const admin = await getFirebaseAdmin();
-    const serverDb = admin.firestore();
 
     // Query license in Firestore using admin
-    const snapshot = await serverDb.collection("licenses").where("licenseKey", "==", targetKey).get();
+    const snapshot = (await runFirestoreOp(admin, (db) =>
+      db.collection("licenses").where("licenseKey", "==", targetKey).get()
+    )) as any;
 
     if (snapshot.empty) {
       return res.status(404).json({
@@ -476,7 +519,7 @@ app.post("/api/license/validate", async (req, res) => {
 
 // API: Client Verification of License Key (No Admin Key needed, proxies secure validation for local React webapp)
 app.post("/api/license/client-verify", async (req, res) => {
-  const { licenseKey, email } = req.body;
+  const { licenseKey, email, clientDomain } = req.body;
   const targetKey = (licenseKey || "").trim();
   const targetEmail = (email || "").trim().toLowerCase();
 
@@ -487,81 +530,59 @@ app.post("/api/license/client-verify", async (req, res) => {
     });
   }
 
-  // Real Integration with external SRFactory Licensing Server if configured
-  const extApiUrl = process.env.SRFACTORY_API_URL;
-  const extApiKey = process.env.SRFACTORY_API_KEY;
+  // Call the shared robust license validation handler
+  const result = await handleLicenseCheck(targetKey, req.headers, clientDomain, targetEmail);
 
-  if (extApiUrl) {
+  if (result.success) {
+    // --- Write (Sync) to local Firestore ---
     try {
-      console.log(`Connecting to external licensing API: ${extApiUrl}`);
-      const fallbackHostName = req.get("host") || req.hostname || "localhost";
-      const requestDomain = req.headers.referer ? new URL(req.headers.referer).hostname : fallbackHostName;
-      
-      const payload = {
-        licenseKey: targetKey,
-        buyerEmail: targetEmail,
-        requestDomain: requestDomain
-      };
+      const admin = await getFirebaseAdmin();
+      await runFirestoreOp(admin, async (db) => {
+        await db.collection("licenses").doc(targetEmail).set({
+          email: targetEmail,
+          licenseKey: targetKey,
+          plan: result.licenseDetails?.plan || "Pro",
+          active: true,
+          activatedAt: admin.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
 
-      const extResponse = await fetch(extApiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${extApiKey}`
-        },
-        body: JSON.stringify(payload)
+        // Hapus permintaan lisensi yang ada karena sudah aktif sekarang secara otomatis
+        await db.collection("license_requests").doc(targetEmail).delete().catch(() => {});
       });
-
-      const resData: any = await extResponse.json();
-
-      if (extResponse.ok && resData.valid) {
-        // --- Write (Sync) to local Firestore ---
-        try {
-          const admin = await getFirebaseAdmin();
-          const serverDb = admin.firestore();
-          
-          await serverDb.collection("licenses").doc(targetEmail).set({
-            email: targetEmail,
-            licenseKey: targetKey,
-            plan: resData.license?.plan || "Pro",
-            active: true,
-            activatedAt: admin.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
-
-          // Hapus permintaan lisensi yang ada karena sudah aktif sekarang secara otomatis
-          await serverDb.collection("license_requests").doc(targetEmail).delete().catch(() => {});
-        } catch (dbErr: any) {
-          console.error("Gagal menyinkronkan lisensi ke Firestore lokal:", dbErr);
-        }
-
-        return res.json({
-          valid: true,
-          message: resData.message || "Lisensi berhasil diverifikasi!",
-          license: {
-            licenseKey: resData.license?.licenseKey || targetKey,
-            email: resData.license?.email || targetEmail,
-            plan: resData.license?.plan || "Pro",
-            activatedAt: resData.license?.activatedAt || new Date().toISOString()
-          }
-        });
-      } else {
-        return res.status(extResponse.status).json({
-          valid: false,
-          message: resData.message || "Verifikasi gagal: kunci lisensi tidak valid atau diblokir."
-        });
-      }
-    } catch (fetchErr: any) {
-      console.error("Gagal terhubung ke API Lisensi Eksternal, melakukan fallback ke Firestore lokal...", fetchErr);
+    } catch (dbErr: any) {
+      console.error("Gagal menyinkronkan lisensi ke Firestore lokal:", dbErr);
     }
+
+    return res.json({
+      valid: true,
+      message: result.message || "Lisensi berhasil diverifikasi!",
+      license: result.licenseDetails || {
+        licenseKey: targetKey,
+        email: targetEmail,
+        plan: "Pro",
+        activatedAt: new Date().toISOString()
+      }
+    });
+  } else {
+    // Jika response adalah 400, 403, atau 404, tandanya kunci lisensi memang tidak valid/ditolak oleh server eksternal.
+    // Jika selain itu (seperti 500, 502, 503, 504 dll.), kita anggap server mengalami gangguan, lalu lanjut fallback ke lokal Firestore.
+    if ([400, 403, 404].includes(result.status)) {
+      return res.status(result.status).json({
+        valid: false,
+        message: result.message
+      });
+    }
+    console.warn(`External licensing API returned HTTP ${result.status}. Mencoba verifikasi menggunakan local Firestore...`);
   }
 
   // Fallback to Local Firestore
   try {
     const admin = await getFirebaseAdmin();
-    const serverDb = admin.firestore();
 
-    // Query licenses
-    const snapshot = await serverDb.collection("licenses").where("licenseKey", "==", targetKey).get();
+    // Query vacancies/licenses
+    const snapshot = (await runFirestoreOp(admin, (db) =>
+      db.collection("licenses").where("licenseKey", "==", targetKey).get()
+    )) as any;
 
     if (snapshot.empty) {
       return res.status(404).json({
@@ -589,7 +610,9 @@ app.post("/api/license/client-verify", async (req, res) => {
     }
 
     // Clean up pending requests
-    await serverDb.collection("license_requests").doc(targetEmail).delete().catch(() => {});
+    await runFirestoreOp(admin, (db) =>
+      db.collection("license_requests").doc(targetEmail).delete().catch(() => {})
+    );
 
     // Success response
     return res.json({
@@ -610,6 +633,14 @@ app.post("/api/license/client-verify", async (req, res) => {
       message: err.message
     });
   }
+});
+
+// API: Vercel/Next.js/Express-style robust auth check endpoint
+app.post("/api/auth/license-check", async (req, res) => {
+  const { licenseKey, clientDomain, buyerEmail, email } = req.body;
+  const activeEmail = buyerEmail || email || "";
+  const result = await handleLicenseCheck(licenseKey, req.headers, clientDomain, activeEmail);
+  return res.status(result.status).json(result);
 });
 
 // Vite middleware for development

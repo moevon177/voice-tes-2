@@ -4122,7 +4122,15 @@ function LicenseOverlay({ theme, user, onVerified }: { theme: string; user: any;
         })
       });
 
-      const data = await res.json();
+      let data: any = {};
+      const contentType = res.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        data = await res.json();
+      } else {
+        const textStr = await res.text();
+        data = { valid: false, message: textStr || `gRPC/HTTP Error ${res.status}` };
+      }
+
       if (res.ok && data.valid) {
         toast.success("Lisensi berhasil terverifikasi!", { id: toastId });
         onVerified(data.license);
