@@ -114,7 +114,7 @@ export async function handleLicenseCheck(
 
       return {
         success: false,
-        status: response.status || 502,
+        status: 502, // Jamin status 502 agar backend tahu ini adalah masalah network/WAF, bukan penolakan lisensi resmi dari DB (sehingga memicu fallback local)
         message: errorMsg,
       };
     }

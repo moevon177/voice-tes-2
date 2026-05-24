@@ -4118,7 +4118,8 @@ function LicenseOverlay({ theme, user, onVerified }: { theme: string; user: any;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           licenseKey: inputKey.trim(),
-          email: user.email
+          email: user.email,
+          clientDomain: window.location.hostname
         })
       });
 
