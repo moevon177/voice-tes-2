@@ -17,6 +17,52 @@ function getFirebaseConfig() {
   }
 }
 
+async function getFirebaseAdmin() {
+  const admin = (await import("firebase-admin")).default;
+  if (!admin.apps.length) {
+    const firebaseConfig = getFirebaseConfig();
+    const opt: any = {
+      projectId: firebaseConfig.projectId
+    };
+
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+      try {
+        const sa = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+        opt.credential = admin.credential.cert(sa);
+        console.log("Firebase Admin initialized using FIREBASE_SERVICE_ACCOUNT JSON env.");
+      } catch (e: any) {
+        console.error("Gagal parse FIREBASE_SERVICE_ACCOUNT:", e);
+      }
+    } else if (process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL) {
+      try {
+        opt.credential = admin.credential.cert({
+          projectId: firebaseConfig.projectId,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        });
+        console.log("Firebase Admin initialized using FIREBASE_PRIVATE_KEY and FIREBASE_CLIENT_EMAIL.");
+      } catch (e: any) {
+        console.error("Gagal initialize individual private key:", e);
+      }
+    } else {
+      try {
+        opt.credential = admin.credential.applicationDefault();
+        console.log("Firebase Admin initialized using ADC.");
+      } catch (e: any) {
+        throw new Error(
+          "Firebase Admin credentials tidak ditemukan. " +
+          "Silakan atur salah satu variabel lingkungan berikut pada setup hosting (Vercel) Anda: " +
+          "1. FIREBASE_SERVICE_ACCOUNT (berisi konten JSON Key Akun Layanan Firebase) " +
+          "Atau: FIREBASE_PRIVATE_KEY & FIREBASE_CLIENT_EMAIL."
+        );
+      }
+    }
+
+    admin.initializeApp(opt);
+  }
+  return admin;
+}
+
 export const app = express();
 const PORT = parseInt(process.env.PORT || "3000", 10);
 
@@ -330,14 +376,7 @@ app.post("/api/license/validate", async (req, res) => {
   }
 
   try {
-    const admin = (await import("firebase-admin")).default;
-    const firebaseConfig = getFirebaseConfig();
-
-    if (!admin.apps.length) {
-      admin.initializeApp({
-        projectId: firebaseConfig.projectId
-      });
-    }
+    const admin = await getFirebaseAdmin();
     const serverDb = admin.firestore();
 
     // Query license in Firestore using admin
@@ -478,13 +517,7 @@ app.post("/api/license/client-verify", async (req, res) => {
       if (extResponse.ok && resData.valid) {
         // --- Write (Sync) to local Firestore ---
         try {
-          const admin = (await import("firebase-admin")).default;
-          if (!admin.apps.length) {
-            const firebaseConfig = getFirebaseConfig();
-            admin.initializeApp({
-              projectId: firebaseConfig.projectId
-            });
-          }
+          const admin = await getFirebaseAdmin();
           const serverDb = admin.firestore();
           
           await serverDb.collection("licenses").doc(targetEmail).set({
@@ -524,14 +557,7 @@ app.post("/api/license/client-verify", async (req, res) => {
 
   // Fallback to Local Firestore
   try {
-    const admin = (await import("firebase-admin")).default;
-    const firebaseConfig = getFirebaseConfig();
-
-    if (!admin.apps.length) {
-      admin.initializeApp({
-        projectId: firebaseConfig.projectId
-      });
-    }
+    const admin = await getFirebaseAdmin();
     const serverDb = admin.firestore();
 
     // Query licenses
